@@ -1,0 +1,37 @@
+{
+  "name": "movie-ticket-booking",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node index.js",
+    "start:3000": "set PORT=3000 && nodemon index.js",
+    "start:3001": "set PORT=3001 && nodemon index.js",
+    "start:3002": "set PORT=3002 && nodemon index.js",
+    "start:3003": "set PORT=3003 && nodemon index.js",
+    "start:3004": "set PORT=3004 && nodemon index.js",
+    "start:3005": "set PORT=3005 && nodemon index.js",
+    "start:3006": "set PORT=3006 && nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "cookie-parser": "^1.4.7",
+    "cookieparser": "^0.1.0",
+    "cors": "^2.8.6",
+    "crypto": "^1.0.1",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "ioredis": "^5.11.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.7.0",
+    "nodemon": "^3.1.14",
+    "pg": "^8.21.0",
+    "prisma": "^6.19.3",
+    "twilio": "^6.0.2",
+    "uuid": "^14.0.0"
+  }
+}
