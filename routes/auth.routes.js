@@ -37,4 +37,17 @@ router.get("/verify",authenticate,async(req,res)=>{
        throw new AppError(err,400);
     }
 })
+router.get("/test-cookie", (req, res) => {
+
+     res.cookie("refresh_token","token is set and visisble",{
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite:  process.env.NODE_ENV === "production"
+            ? "none"
+            : "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
+
+    res.send("Done");
+});
 export default router;

@@ -7,11 +7,128 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum bookingStatus{
+    PENDING
+    CONFIRMED
+    CANCELLED
+}
+
+enum showSeat{
+  AVAILABLE
+  LOCKED
+  BOOKED
+}
+enum seatType{
+  STANDARD
+  PREMIUM
+  BALCONY
+}
 model User{
-  id String @id@default(cuid())
+  id String @id @default(cuid())
   phone String @unique
   name String
   gender String
   age  Int 
+  bookings Booking[]
+
 }
 
+model Booking{
+  id String @id @default(cuid())
+  userId String 
+  bookingTime DateTime
+  totalAmount Decimal
+  status bookingStatus
+  bookingSeats  BookingSeat[]
+  showId String
+  show   Show @relation(fields: [showId], references: [id])
+  user User @relation(fields: [userId],references: [id])
+  @@index([userId])
+}
+
+model BookingSeat{
+  id String @id @default(cuid())
+  bookingId String 
+  showSeatId String @unique 
+  booking Booking @relation(fields: [bookingId],references: [id])
+  showSeat ShowSeat @relation(fields: [showSeatId],references: [id])
+  @@index([bookingId])
+}
+
+model ShowSeat{
+  id String @id @default(cuid())
+  showId String
+  seatId String
+  status showSeat
+  show Show @relation(fields: [showId],references: [id])
+  seat Seat @relation(fields: [seatId],references: [id])
+  bookingSeat BookingSeat?
+  @@unique([showId, seatId])
+  @@index([showId])
+}
+
+model Show{
+  id String @id @default(cuid())
+  movie_id String 
+  screen_id String 
+  start_time DateTime
+  end_time DateTime
+  pricings  ShowSeatPricing[]
+  movie Movie @relation(fields: [movie_id],references: [id])
+  screen Screen @relation(fields: [screen_id],references: [id])
+  showSeats ShowSeat[]
+  bookings Booking[]
+  @@index([movie_id])
+  @@index([screen_id])
+}
+
+model ShowSeatPricing {
+  id       String @id @default(cuid())
+
+  showId   String
+  seatType seatType
+  price    Decimal
+  show     Show @relation(fields: [showId], references: [id])
+  @@unique([showId, seatType])
+}
+model Seat{
+  id String @id @default(cuid())     
+  screenId String 
+  seatNumber String
+  seatType seatType 
+  screen Screen @relation(fields: [screenId],references: [id])
+  showseats ShowSeat[]
+  @@unique([screenId, seatNumber])
+}
+
+  model Movie{
+    id String @id @default(cuid())   
+    name String 
+    releaseDate  DateTime
+    rating Decimal 
+    cast   String
+    director String
+    producer String 
+    durationMinutes Int 
+    language String
+    shows Show[]
+    @@index([name])
+  }
+
+model Screen{
+  id String @id @default(cuid())   
+  screenNumber Int 
+  theatreId String
+  theatre Theatre @relation(fields: [theatreId],references: [id])
+  seats Seat[]
+  shows Show[]
+  @@unique([theatreId,screenNumber])
+  @@index([theatreId])
+}
+
+model Theatre{
+  id String @id @default(cuid())
+  name String 
+  address String
+  screens Screen[]
+}

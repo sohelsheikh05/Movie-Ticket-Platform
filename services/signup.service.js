@@ -37,13 +37,17 @@ export const verifySignup=catchAsync(async(req,res)=>{
         res.cookie("refersh_token",Refresh_token,{
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "none",
+             sameSite:  process.env.NODE_ENV === "production"
+            ? "none"
+            : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         });
         res.cookie("access_token",Access_token,{
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "none",
+             sameSite:  process.env.NODE_ENV === "production"
+            ? "none"
+            : "lax",
             maxAge: 15*60*1000 // 7 days
         });
 
