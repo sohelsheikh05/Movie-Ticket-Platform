@@ -10,12 +10,15 @@ export const jwtService={
     verifyRefreshToken :async(token)=>{
         //console.log(token)
         const decode =await jwt.verify(token,process.env.JWT_SECRET);
+        //console.log(decode)
         return decode;
     },
     generateAccessToken:async(data)=>{
+       //console.log(data)
         const token =await jwt.sign(data,process.env.ACCESS_SECRET,{
     expiresIn: "15m"
     });
+     
         return token;
     },
     verifyAccessToken :async(token)=>{

@@ -15,7 +15,6 @@ enum bookingStatus{
 
 enum showSeat{
   AVAILABLE
-  LOCKED
   BOOKED
 }
 enum seatType{
@@ -37,10 +36,11 @@ model Booking{
   id String @id @default(cuid())
   userId String 
   bookingTime DateTime
-  totalAmount Decimal
+  totalAmount Decimal 
   status bookingStatus
   bookingSeats  BookingSeat[]
   showId String
+  invoice   Invoice?
   show   Show @relation(fields: [showId], references: [id])
   user User @relation(fields: [userId],references: [id])
   @@index([userId])
@@ -59,7 +59,7 @@ model ShowSeat{
   id String @id @default(cuid())
   showId String
   seatId String
-  status showSeat
+  status showSeat @default(AVAILABLE)
   show Show @relation(fields: [showId],references: [id])
   seat Seat @relation(fields: [seatId],references: [id])
   bookingSeat BookingSeat?
@@ -69,17 +69,17 @@ model ShowSeat{
 
 model Show{
   id String @id @default(cuid())
-  movie_id String 
-  screen_id String 
-  start_time DateTime
-  end_time DateTime
+  movieId String 
+  screenId String 
+  startTime DateTime
+  endTime DateTime
   pricings  ShowSeatPricing[]
-  movie Movie @relation(fields: [movie_id],references: [id])
-  screen Screen @relation(fields: [screen_id],references: [id])
+  movie Movie @relation(fields: [movieId],references: [id])
+  screen Screen @relation(fields: [screenId],references: [id])
   showSeats ShowSeat[]
   bookings Booking[]
-  @@index([movie_id])
-  @@index([screen_id])
+  @@index([movieId])
+  @@index([screenId])
 }
 
 model ShowSeatPricing {
@@ -113,6 +113,7 @@ model Seat{
     language String
     shows Show[]
     @@index([name])
+    @@unique([name,language])
   }
 
 model Screen{
@@ -130,5 +131,24 @@ model Theatre{
   id String @id @default(cuid())
   name String 
   address String
+  city String
+  pincode Int
   screens Screen[]
+  @@unique([name,address])
+}
+
+model Invoice {
+  id          String   @id @default(cuid())
+
+  invoiceNo   String   @unique
+
+  bookingId   String   @unique
+
+  subTotal    Decimal
+  tax         Decimal
+  total       Decimal
+
+  issuedAt    DateTime @default(now())
+
+  booking Booking @relation(fields: [bookingId], references: [id])
 }

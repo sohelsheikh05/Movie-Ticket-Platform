@@ -26,14 +26,18 @@ export const authenticate=async(req,res,next)=>{
                         )
                     );
                 }
+                //console.log("in second try before verifyrefershtoken")
                 const data=await jwtService.verifyRefreshToken(refreshToken);
-                const access_token=await jwtService.generateAccessToken(data);
+                //console.log(data)
+                const d={id:data.id,phone:data.phone}
+                const access_token=await jwtService.generateAccessToken(d);
                 res.cookie("access_token",access_token,{
                     httpOnly: true,
                     secure: process.env.NODE_ENV === "production",
-                    sameSite: "none",
-                    maxAge: 15*60*1000 // 7 days
+                    sameSite: process.env.NODE_ENV === "production"?"none":"lax",
+                    maxAge: 15*60*1000 
                 });
+                //console.log("after cookie ceate")
                 req.user=data
                 return next();
             }
